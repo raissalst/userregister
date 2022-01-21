@@ -60,7 +60,7 @@ def post_new_user(new_user_data, dados):
         new_email = new_user_data.get("email").lower()
         new_user_data["nome"] = new_name
         new_user_data["email"] = new_email
-        new_user_data["id"] = len(user_list) + 1
+        new_user_data["id"] = user_list[-1]["id"] + 1 if len(user_list) != 0 else 1
 
         if next((item for item in user_list if item["email"] == new_email), None) != None:
             raise EmailError()
