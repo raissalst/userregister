@@ -1,4 +1,4 @@
-from controllers.user_controller import increment_id
+from app.controllers.user_controller import increment_id
 
 class User:
     def __init__(self, name: str, email: str) -> None:

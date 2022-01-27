@@ -1,9 +1,9 @@
 from flask import Flask
-from app import view
+from app import routes
 import os
 
-directory_path = os.environ.get("DIRECTORY_PATH")
-directory_name = os.environ.get("DIRECTORY_NAME")
+directory_path = os.getenv("DIRECTORY_PATH")
+directory_name = os.getenv("DIRECTORY_NAME")
 
 if f"{directory_name}" not in os.listdir("./app"):
     os.mkdir(f"{directory_path}")
@@ -11,6 +11,6 @@ if f"{directory_name}" not in os.listdir("./app"):
 def create_app():
     app = Flask(__name__)
 
-    view.init_app(app)
+    routes.init_app(app)
 
     return app
