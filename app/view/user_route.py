@@ -5,6 +5,8 @@ from app.exc.not_found_error import NotFoundError
 from app.exc.wrong_keys_error import WrongKeysError
 from app.exc.attribute_error import AttributeError
 from app.modules import user_handler
+from models.user_model import User
+from app.controllers import user_controller
 
 def user_route(app):
     @app.get("/user")
@@ -21,7 +23,15 @@ def user_route(app):
     @app.post("/user")
     def post_users():
         new_user_data = request.get_json()
-        return user_handler.access_json_file(new_user_data)
+
+        try:
+            new_user = User(**new_user_data)
+            return user_controller.post_new_user(new_user.__dict__)
+        except TypeError as e:
+            return {"msg": f"{e}"}, 404
+        except AttributeError as err:
+            return err.message
+
 
     @app.delete("/user/<int:id>")
     def delete_users(id):
@@ -43,3 +53,5 @@ def user_route(app):
             return err.message
         except EmailError as err:
             return err.message
+        except TypeError as e:
+            return {"msg": f"{e}"}, 404
