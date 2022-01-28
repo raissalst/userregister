@@ -14,14 +14,13 @@ def user_route(app):
     @app.get("/user")
     def get_users_list():
         return jsonify(user_controller.load_json_file_data())
-        # return ""
 
-    # @app.get("/user/<int:id>")
-    # def filter_user(id):
-    #     try:
-    #         return user_controller.filter_user_by_id(id)
-    #     except NotFoundError as e:
-    #         return e.message
+    @app.get("/user/<int:id>")
+    def filter_user(id):
+        try:
+            return user_controller.filter_user_by_id(id)
+        except NotFoundError as e:
+            return e.message
     
     @app.post("/user")
     def post_users():
@@ -30,11 +29,11 @@ def user_route(app):
             new_user = User(**new_user_data)
             return user_controller.post_new_user(new_user.__dict__), HTTPStatus.CREATED
         except TypeError as e:
-            return {"msg": f"{e}"}, HTTPStatus.BAD_REQUEST
-        except AttributeError as e:
-            return {"msg": f"{e}"}, HTTPStatus.BAD_REQUEST
-        except EmailError as err:
-            return err.message
+            return {"error": f"{e}"}, HTTPStatus.BAD_REQUEST
+        except AttributeError:
+            return {"error": f"types must be string (str)", "types entered": [{"name": f"{type(new_user_data['name']).__name__}"}, {"email": f"{type(new_user_data['email']).__name__}"}]}, HTTPStatus.BAD_REQUEST
+        except EmailError as e:
+            return e.message
 
 
     @app.delete("/user/<int:id>")
