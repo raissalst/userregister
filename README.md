@@ -41,10 +41,6 @@ In case everything works well, the answer shall be like:
 }
 ```
 
-_Possible errors:_
-
-_1.- User not found (STATUS 404)_
-
 <h3 align="center">***Filter user by id***</h3>
 
 `GET /user/:id`
