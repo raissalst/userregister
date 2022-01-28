@@ -77,20 +77,15 @@ def delete_user_by_id(id):
         raise NotFoundError
     
 
-def update_user_by_id(new_data, id):
+def update_user_by_id(new_user_data, id):
     dados = load_json_file_data()
-    list_of_users = dados_json["data"]
+    user_list = dados.get("data")
 
-    if new_data.get("email"):
-        new_email = new_data.get("email").lower()
-        if next((item for item in list_of_users if item["email"] == new_email), None) != None:
-            raise EmailError
-
-    if len(list_of_users) == 0:
+    if len(user_list) == 0:
         raise NotFoundError
-    
+
     array_of_valid_keys = ["name", "email"]
-    array_of_entry_to_update_keys = new_data.keys()
+    array_of_entry_to_update_keys = new_user_data.keys()
     array_of_wrong_keys = []
 
     for key in array_of_entry_to_update_keys:
@@ -98,23 +93,27 @@ def update_user_by_id(new_data, id):
             array_of_wrong_keys.append(key)
 
     if len(array_of_wrong_keys) != 0:
-        raise WrongKeysError(array_of_wrong_keys)
-
-    for item in list_of_users:
+        raise KeyError
+    
+    if new_user_data.get("email") and next((item for item in user_list if item["email"] == new_user_data["email"]), None) != None:
+        raise EmailError
+    
+    array_of_values_type = new_user_data.values()
+    for item in array_of_values_type:
+        if type(item) != str:
+            raise AttributeError
+            
+    for item in user_list:
         if item["id"] == id:
-            if new_data.get("name") and type(new_data.get("name")) is str:
-                item["name"] = new_data["name"].title()
-            if new_data.get("email") and type(new_data.get("email")) is str:
-                item["email"] = new_data["email"].lower()
-            if new_data.get("name") and type(new_data.get("name")) is not str:
-                raise AttributeError
-            if new_data.get("email") and type(new_data.get("email")) is not str:
-                raise AttributeError
+            if new_user_data.get("name") and type(new_user_data.get("name")) is str:
+                item["name"] = new_user_data["name"].title()
+            if new_user_data.get("email") and type(new_user_data.get("email")) is str:
+                item["email"] = new_user_data["email"].lower()
 
             data_updated = item
 
             with open(f"{directory_path}{filename_database}", "w") as json_file:
-                dump(dados_json, json_file, indent=4)
+                dump(dados, json_file, indent=4)
             
             return jsonify(data_updated), 200
         else:

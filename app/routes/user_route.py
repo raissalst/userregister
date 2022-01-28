@@ -50,9 +50,9 @@ def user_route(app):
             return user_controller.update_user_by_id(new_user_data, id)
         except NotFoundError as e:
             return e.message
-        except TypeError as e:
-            return {"msg": f"{e}"}, HTTPStatus.BAD_REQUEST
-        except AttributeError as e:
-            return {"msg": f"{e}"}, HTTPStatus.BAD_REQUEST
-        except EmailError as err:
-            return err.message
+        except KeyError:
+            return {"msg": "keys must be 'name' and/or 'email'"}, HTTPStatus.BAD_REQUEST
+        except AttributeError:
+            return {"error": f"types must be string (str)"}, HTTPStatus.BAD_REQUEST
+        except EmailError as e:
+            return e.message
