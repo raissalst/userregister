@@ -1,4 +1,3 @@
-from email.policy import HTTP
 from http import HTTPStatus
 
 class EmailError(Exception):
